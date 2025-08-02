@@ -3,25 +3,20 @@ import XCTest
 import UIKit
 
 final class ImageStoreKitTests: XCTestCase {
-    func testSaveImage() {
-        let image = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 100)).image { ctx in
-            UIColor.red.setFill()
-            ctx.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
+    func testSaveJPGImage() {
+        let size = CGSize(width: 100, height: 100)
+        UIGraphicsBeginImageContext(size)
+        UIColor.blue.setFill()
+        UIRectFill(CGRect(origin: .zero, size: size))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        let expectation = self.expectation(description: "Save image")
+        ImageStore.shared.save(image: image!, format: .jpg(compressionQuality: 0.9)) { info in
+            XCTAssertNotNil(info)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: info!.url.path))
+            expectation.fulfill()
         }
-
-        let expectation = XCTestExpectation(description: "Save image should succeed")
-
-        _ = ImageStore.shared.saveImageTask(image, to: "TestFolder", format: .png) { result in
-            switch result {
-            case .success(let info):
-                print("✅ Saved at: \(info.fullPath)")
-                XCTAssertTrue(info.size.width == 100)
-                expectation.fulfill()
-            case .failure(let error):
-                XCTFail("Saving failed: \(error)")
-            }
-        }
-
-        wait(for: [expectation], timeout: 5.0)
+        waitForExpectations(timeout: 5)
     }
 }

@@ -1,14 +1,12 @@
-// swift-tools-version: 5.9
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
     name: "ImageStoreKit",
-    platforms: [.iOS(.v13)],
-    products: [
-        .library(name: "ImageStoreKit", targets: ["ImageStoreKit"])
-    ],
+    platforms: [.iOS(.v14)],
+    products: [.library(name: "ImageStoreKit", targets: ["ImageStoreKit"])],
     targets: [
-        .target(name: "ImageStoreKit"),
+        .target(name: "ImageStoreKit", dependencies: []),
         .testTarget(name: "ImageStoreKitTests", dependencies: ["ImageStoreKit"])
     ]
 )
